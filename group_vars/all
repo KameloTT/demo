@@ -1,0 +1,7 @@
+demo_image_url: 'https://cloud-images.ubuntu.com/focal/current/focal-server-cloudimg-amd64.img'
+osp_auth_url: 'http://10.0.0.99:5000'
+osp_username: 'admin'
+osp_password: '6ir169ikKOnTuAD5iCO6t3r5A'
+osp_project_name: 'admin'
+osp_project_domain_name: 'Default'
+osp_user_domain_name: 'Default'
