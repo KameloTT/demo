@@ -1,0 +1,110 @@
+- name: "Demo client-server on Openstack"
+  hosts: all
+  become: false
+  gather_facts: no
+  tasks:
+  - name: "delete web-server instance"
+    openstack.cloud.server:
+      name: vm-server
+      state: present
+      auth:
+        auth_url: "{{osp_auth_url}}"
+        username: "{{osp_username}}"
+        password: "{{osp_password}}"
+        project_name: "{{osp_project_name}}"
+        os_user_domain_name: "{{osp_user_domain_name}}"
+        os_project_domain_name: "{{osp_project_domain_name}}"
+      image: "vish_image"
+      flavor: "vish_flavor"
+      network: "vish_network"
+    ignore_errors: true
+
+  - name: "delete client instance"
+    openstack.cloud.server:
+      name: vm-client
+      state: absent
+      auth:
+        auth_url: "{{osp_auth_url}}"
+        username: "{{osp_username}}"
+        password: "{{osp_password}}"
+        project_name: "{{osp_project_name}}"
+        os_user_domain_name: "{{osp_user_domain_name}}"
+        os_project_domain_name: "{{osp_project_domain_name}}"
+      image: "vish_image"
+      flavor: "vish_flavor"
+      network: "vish_network"
+    ignore_errors: true
+
+  - name: "delete Centos Image"
+    openstack.cloud.image:
+      auth:
+        auth_url: "{{osp_auth_url}}"
+        username: "{{osp_username}}"
+        password: "{{osp_password}}"
+        project_name: "{{osp_project_name}}"
+        os_user_domain_name: "{{osp_user_domain_name}}"
+        os_project_domain_name: "{{osp_project_domain_name}}"
+      name: vish_image
+      container_format: bare
+      disk_format: qcow2
+      state: absent
+      filename: /tmp/vish_image.qcow2
+      kernel: cirros-vmlinuz
+      ramdisk: cirros-initrd
+      tags:
+        - demo
+      properties:
+        cpu_arch: x86_64
+        distro: ubuntu
+    ignore_errors: true
+
+  - name: "delete Network"
+    openstack.cloud.network:
+      auth:
+        auth_url: "{{osp_auth_url}}"
+        username: "{{osp_username}}"
+        password: "{{osp_password}}"
+        project_name: "{{osp_project_name}}"
+        os_user_domain_name: "{{osp_user_domain_name}}"
+        os_project_domain_name: "{{osp_project_domain_name}}"
+      state: absent
+      name: vish_network
+      shared: yes
+      provider_network_type: vxlan
+      provider_segmentation_id: 5
+      external: false
+    ignore_errors: true
+
+  - name: "delete subnet"
+    openstack.cloud.subnet:
+      auth:
+        auth_url: "{{osp_auth_url}}"
+        username: "{{osp_username}}"
+        password: "{{osp_password}}"
+        project_name: "{{osp_project_name}}"
+        os_user_domain_name: "{{osp_user_domain_name}}"
+        os_project_domain_name: "{{osp_project_domain_name}}"
+      state: absent
+      network_name: vish_network
+      name: vish_subnet
+      cidr: 192.168.0.0/24
+      enable_dhcp: yes
+      allocation_pool_start: '192.168.0.100'
+      allocation_pool_end: '192.168.0.102'
+    ignore_errors: true
+
+  - name: "delete flavor with 1024MB of RAM, 1 virtual CPU, and 12GB of local disk."
+    openstack.cloud.compute_flavor:
+      auth:
+        auth_url: "{{osp_auth_url}}"
+        username: "{{osp_username}}"
+        password: "{{osp_password}}"
+        project_name: "{{osp_project_name}}"
+        os_user_domain_name: "{{osp_user_domain_name}}"
+        os_project_domain_name: "{{osp_project_domain_name}}"
+      state: absent
+      name: vish_flavor
+      ram: 1024
+      vcpus: 1
+      disk: 12
+    ignore_errors: true
