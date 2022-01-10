@@ -6,7 +6,7 @@
   - name: "delete web-server instance"
     openstack.cloud.server:
       name: vm-server
-      state: present
+      state: absent
       auth:
         auth_url: "{{osp_auth_url}}"
         username: "{{osp_username}}"
